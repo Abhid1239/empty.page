@@ -2,13 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Note from "@/models/Note";
 
+// type RouteContext = {
+//   params: {
+//     noteId: string;
+//   };
+// };
+
+type RouteContext = {
+  params: Promise<{
+    noteId: string;
+  }>;
+};
 // --- GET: Fetch a single note by its ID ---
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { noteId: string } }
-) {
+export async function GET(request: NextRequest, context: RouteContext) {
   await dbConnect();
-  const { noteId } = params;
+  const { noteId } = await context.params;
 
   try {
     const note = await Note.findById(noteId);
@@ -28,12 +36,9 @@ export async function GET(
 }
 
 // --- PUT: Update a note's content by its ID ---
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { noteId: string } }
-) {
+export async function PUT(request: NextRequest, context: RouteContext) {
   await dbConnect();
-  const { noteId } = params;
+  const { noteId } = await context.params;
 
   try {
     const { content } = await request.json(); // Get the new content from the request body.
