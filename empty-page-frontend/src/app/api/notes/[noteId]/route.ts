@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Note from "@/models/Note";
 
 // --- GET: Fetch a single note by its ID ---
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { noteId: string } }
 ) {
   await dbConnect();
@@ -29,7 +29,7 @@ export async function GET(
 
 // --- PUT: Update a note's content by its ID ---
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { noteId: string } }
 ) {
   await dbConnect();
