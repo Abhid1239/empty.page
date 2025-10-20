@@ -18,12 +18,12 @@ const io = new Server(server, {
 
 
 io.on('connection', (socket) => {
-    console.log(`✅ User connected: ${socket.id}`);
+    // console.log(`✅ User connected: ${socket.id}`);
 
     // When a user opens a note, they join a "room" for that specific note
     socket.on('join_note', (noteId) => {
         socket.join(noteId);
-        console.log(`User ${socket.id} joined note room: ${noteId}`);
+        // console.log(`User ${socket.id} joined note room: ${noteId}`);
     });
 
     // When a user types, receive their update and broadcast it to the room
@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log(`❌ User disconnected: ${socket.id}`);
+        // console.log(`❌ User disconnected: ${socket.id}`);
     });
 });
 

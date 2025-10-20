@@ -5,17 +5,10 @@ import { useParams, useRouter } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
 import { useEditorStore } from '@/stores/editorStore';
 import { Sidebar } from '@/components/Sidebar';
+import { debounce } from "lodash";
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
 
 const BACKEND_URI = process.env.NEXT_PUBLIC_BACKEND_URI;
-// A utility function to prevent a function from being called too frequently
-function useDebounce(callback: (...args: any[]) => void, delay: number) {
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-    return (...args: any[]) => {
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => callback(...args), delay);
-    };
-}
 
 export function EditorPage() {
     const params = useParams();
@@ -86,9 +79,8 @@ export function EditorPage() {
     };
 
     // Debounced function for auto-saving and broadcasting changes
-    const debouncedSave = useDebounce(async (newContent: string) => {
+    const debouncedSave = debounce(async (newContent: string) => {
         if (isLive && noteId && socketRef.current) {
-            // Broadcast changes to other users
             socketRef.current.emit('text_update', { noteId, content: newContent });
             // Save changes to the database
             await fetch(`/api/notes/${noteId}`, {
@@ -114,7 +106,6 @@ export function EditorPage() {
         <div className="flex">
             <main className="flex-grow">
                 <div className="w-full">
-                    {/* The editor is now a "controlled" component */}
                     <SimpleEditor
                         content={content}
                         onChange={handleContentChange}
